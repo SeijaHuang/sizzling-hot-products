@@ -2,21 +2,21 @@
 
 namespace Web.Host.Models.Responses.Products;
 
-public class  TopProductDaily
+public class TopProductDaily
 {
     public DateOnly Date { set; get; }
-    public Product TopProduct { set; get; } = new Product();
+    public Product Product { set; get; } = new Product();
 }
 
 public class TopProductPeriod
 {
     public DateOnly StartDate { set; get; }
     public DateOnly EndDate { set; get; }
-    public Product TopProduct { set; get; } = new Product();
+    public Product Product { set; get; } = new Product();
 }
 
-public class GetTopProductsResponse 
+public class GetTopProductsResponse
 {
-    public List<TopProductDaily>  Daily { set; get; } = new List<TopProductDaily>();
+    public List<TopProductDaily> Daily { set; get; } = new List<TopProductDaily>();
     public TopProductPeriod? Period { set; get; }
 }

@@ -17,7 +17,7 @@ namespace Web.Host
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped(typeof(IFileReaderService<>), typeof(FileReaderService<>));
+            builder.Services.AddScoped<IFileReaderService, FileReaderService>();
             builder.Services.AddScoped<IProductService, ProductService>();
 
             var app = builder.Build();

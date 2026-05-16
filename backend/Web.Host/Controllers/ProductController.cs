@@ -21,9 +21,14 @@ namespace Web.Host.Controllers
         #endregion
 
         [HttpGet]
-        public async Task<ActionResult<GetTopProductsResponse>> GetTopProductsAsync([FromQuery] DateOnly? startDate, [FromQuery] DateOnly? endDate)
+        public async Task<ActionResult<GetTopProductsResponse>> GetTopProductsAsync([FromQuery] string startDate, [FromQuery] string endDate)
         {
-            var response = await _productService.GetTopProductsAsync(startDate, endDate);
+            if (!DateOnly.TryParseExact(startDate, "dd/MM/yyyy", out DateOnly parsedStartDate) || !DateOnly.TryParseExact(endDate, "dd/MM/yyyy", out DateOnly parsedEndDtae))
+            {
+                return BadRequest();
+            }
+
+            var response = await _productService.GetTopProductsAsync(parsedStartDate, parsedEndDtae);
 
             return Ok(response);
         }

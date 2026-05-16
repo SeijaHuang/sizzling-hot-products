@@ -9,15 +9,17 @@ namespace Web.Host.Services;
 public class ProductService : IProductService
 {
     #region Private Fields
-    private readonly IFileReaderService<List<Order>> _fileReaderService;
+    private readonly IFileReaderService _fileReaderService;
     private readonly string _ordersFilePath = "Data/orders.json";
+    private readonly string _productsFilePath = "Data/products.json";
+    private readonly string _defaultProductName = "Unknown Product";
     private class ProductSalesCount : Dictionary<string, int>;
     private class DailySalesCount : Dictionary<DateOnly, ProductSalesCount>;
     private readonly record struct SeenProduct(string productId, string customerId, DateOnly date);
     #endregion
 
     #region Constructor
-    public ProductService(IFileReaderService<List<Order>> fileReaderService)
+    public ProductService(IFileReaderService fileReaderService)
     {
         _fileReaderService = Guard.Against.Null(fileReaderService);
     }
@@ -28,20 +30,48 @@ public class ProductService : IProductService
     {
 
         // Read orders from file
-        var orders = await _fileReaderService.ReadAsync(_ordersFilePath);
+        var orders = await _fileReaderService.ReadAsync<List<Order>>(_ordersFilePath);
+        var products = await _fileReaderService.ReadAsync<List<Product>>(_productsFilePath);
+        var productsDict = products.ToDictionary(p => p.Id, p => p.Name);
 
         // This value is used to remove duplicated orders, the fields are productId, customerId, date
         var seen = new HashSet<SeenProduct>();
 
         // This value is used to count daily sales stats
         var dailyStats = new DailySalesCount();
+        // This value is used to count total sales stats for the period
+        var totalStats = new ProductSalesCount();
 
         foreach (Order order in orders)
         {
-            // TODO: cancelled orders logic 
-            if (order.Status == "cancelled") continue;
             // If order's date is out of range, skip it
             if (order.Date < startDate || order.Date > endDate) continue;
+
+            // TODO: cancelled orders logic 
+            if (order.Status == "cancelled")
+            {
+                // If the order is cancelled, we need to find the corresponding completed order with the same orderId, and remove the products in that order from seen set and decrease the count in dailyStats
+                var cancelledOrder = orders.FirstOrDefault(o => o.OrderId == order.OrderId && o.Status == "completed");
+                if (cancelledOrder == null) continue;
+
+                // Remove the products in the cancelled order from seen set and decrease the count in dailyStats
+                foreach (OrderEntry entry in cancelledOrder.Entries)
+                {
+                    var cancelledProduct = new SeenProduct(entry.Id, order.CustomerId, cancelledOrder.Date);
+                    seen.Remove(cancelledProduct);
+
+                    if (dailyStats.ContainsKey(cancelledOrder.Date) && dailyStats[cancelledOrder.Date].ContainsKey(entry.Id))
+                    {
+                        dailyStats[cancelledOrder.Date][entry.Id] = Math.Max(0, dailyStats[cancelledOrder.Date][entry.Id] - 1);
+                    }
+
+                    if (totalStats.ContainsKey(entry.Id))
+                    {
+                        totalStats[entry.Id] = Math.Max(0, totalStats[entry.Id] - 1);
+                    }
+                }
+            }
+            ;
 
             if (order.Status == "completed")
             {
@@ -68,17 +98,83 @@ public class ProductService : IProductService
 
                     dailyStats[order.Date].TryGetValue(entry.Id, out int currentCount);
                     dailyStats[order.Date][entry.Id] = currentCount + 1;
+
+                    if (!totalStats.ContainsKey(entry.Id))
+                    {
+                        totalStats[entry.Id] = 0;
+                    }
+                    totalStats[entry.Id]++;
                 }
             }
-
         }
 
 
+        var result = new GetTopProductsResponse
+        {
+            Daily = GetTopProductDailies(dailyStats, productsDict)
+        };
 
+        if (endDate > startDate)
+        {
+            result.Period = GetTopProductPeriod(totalStats, productsDict, startDate.Value, endDate.Value);
+        }
 
-        throw new NotImplementedException();
-
+        return new ClientResponse<GetTopProductsResponse>
+        {
+            Body = result,
+            Error = null,
+            Success = true
+        };
     }
+
+    #region Private Methods
+    private List<TopProductDaily> GetTopProductDailies(DailySalesCount dailyStats, Dictionary<string, string> productsDict)
+    {
+        var result = new List<TopProductDaily>();
+        foreach (var dailyStat in dailyStats)
+        {
+            var date = dailyStat.Key;
+            var productSales = dailyStat.Value;
+
+            var topProducts = productSales
+                .OrderByDescending(item => item.Value)
+                .ThenBy(item => productsDict.GetValueOrDefault(item.Key, _defaultProductName))
+                .Select(item => new Product
+                {
+                    Id = item.Key,
+                    Name = productsDict.GetValueOrDefault(item.Key, _defaultProductName)
+                })
+                .First();
+
+            result.Add(new TopProductDaily
+            {
+                Date = date,
+                Product = topProducts
+            });
+        }
+        return result;
+    }
+
+    private TopProductPeriod GetTopProductPeriod(ProductSalesCount totalStats, Dictionary<string, string> productsDict, DateOnly startDate, DateOnly endDate)
+    {
+        var topProduct = totalStats
+            .OrderByDescending(item => item.Value)
+            .ThenBy(item => productsDict.GetValueOrDefault(item.Key, _defaultProductName))
+            .Select(item => new Product
+            {
+                Id = item.Key,
+                Name = productsDict.GetValueOrDefault(item.Key, _defaultProductName)
+            })
+            .First();
+
+        return new TopProductPeriod
+        {
+            StartDate = startDate,
+            EndDate = endDate,
+            Product = topProduct
+        };
+    }
+    #endregion
 }
 
 

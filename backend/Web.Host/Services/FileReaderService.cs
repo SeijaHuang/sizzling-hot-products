@@ -4,7 +4,7 @@ using Web.Host.Services.Interfaces;
 
 namespace Web.Host.Services;
 
-public class FileReaderService<TData> : IFileReaderService<TData>
+public class FileReaderService : IFileReaderService
 {
     #region Private Fields
     private readonly JsonSerializerOptions _defaultOptions;
@@ -21,7 +21,7 @@ public class FileReaderService<TData> : IFileReaderService<TData>
     }
     #endregion
 
-    public async Task<TData> ReadAsync(string path)
+    public async Task<TData> ReadAsync<TData>(string path)
     {
         try
         {

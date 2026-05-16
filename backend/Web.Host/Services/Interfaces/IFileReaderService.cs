@@ -1,9 +1,8 @@
-﻿using System.Text.Json;
-namespace Web.Host.Services.Interfaces;
+﻿namespace Web.Host.Services.Interfaces;
 
-public interface IFileReaderService<TData>
+public interface IFileReaderService
 {
-    Task<TData> ReadAsync(string path);
+    Task<TData> ReadAsync<TData>(string path);
 }
 
 
