@@ -1,1 +1,22 @@
 .idea
+.vs
+
+# .NET build outputs
+bin/
+obj/
+
+# NuGet
+*.nupkg
+project.assets.json
+project.nuget.cache
+*.nuget.dgspec.json
+*.nuget.g.props
+*.nuget.g.targets
+
+# Visual Studio
+*.user
+*.suo
+
+# OS
+Thumbs.db
+.DS_Store
