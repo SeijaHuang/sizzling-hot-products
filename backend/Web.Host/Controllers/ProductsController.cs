@@ -9,14 +9,14 @@ namespace Web.Host.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProductController : ControllerBase
+public class ProductsController : ControllerBase
 {
     #region Private Fields
     private readonly IProductService _productService;
     #endregion
 
     #region Constructor
-    public ProductController(IProductService productService)
+    public ProductsController(IProductService productService)
     {
         _productService = Guard.Against.Null(productService);
     }

@@ -24,6 +24,7 @@ public class GlobalExceptionFilter : IExceptionFilter
         {
             FileNotFoundException => (StatusCodes.Status404NotFound, context.Exception.Message),
             InvalidOperationException => (StatusCodes.Status400BadRequest, context.Exception.Message),
+            BadHttpRequestException => (StatusCodes.Status400BadRequest, context.Exception.Message),
             _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")
         };
         var controller = context.ActionDescriptor.RouteValues["controller"];

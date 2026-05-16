@@ -37,6 +37,15 @@ public class ProductService : IProductService
         .Where(o => o.Status == "completed")
         .ToDictionary(o => o.OrderId, o => o);
 
+        // If there is no order within the date range, we can return early with empty result
+        if (orders.Min(o => o.Date) > endDate)
+        {
+            return new GetTopProductsResponse
+            {
+                Daily = new List<TopProductDaily>(),
+            };
+        }
+
         // This value is used to remove duplicated orders, the fields are productId, customerId, date
         var seen = new HashSet<UniqueSaleKey>();
 
