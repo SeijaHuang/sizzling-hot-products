@@ -1,4 +1,7 @@
 
+using Web.Host.Services;
+using Web.Host.Services.Interfaces;
+
 namespace Web.Host
 {
     public class Program
@@ -13,6 +16,8 @@ namespace Web.Host
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddScoped(typeof(IFileReaderService<>), typeof(FileReaderService<>));
 
             var app = builder.Build();
 
