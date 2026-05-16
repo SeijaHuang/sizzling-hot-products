@@ -1,5 +1,6 @@
-﻿using Web.Host.Services.Interfaces;
-using System.Text.Json;
+﻿using System.Text.Json;
+using Web.Host.Helpers;
+using Web.Host.Services.Interfaces;
 
 namespace Web.Host.Services;
 
@@ -14,15 +15,17 @@ public class FileReaderService<TData> : IFileReaderService<TData>
     {
         _defaultOptions = defaultOptions ?? new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true
+            PropertyNameCaseInsensitive = true,
+            Converters = { new DateOnlyConverter() }
         };
     }
+    #endregion
 
     public async Task<TData> ReadAsync(string path)
     {
         try
         {
-            await using var file =  File.OpenRead(path);
+            await using var file = File.OpenRead(path);
             var data = await JsonSerializer.DeserializeAsync<TData>(file, _defaultOptions);
             if (data == null)
             {

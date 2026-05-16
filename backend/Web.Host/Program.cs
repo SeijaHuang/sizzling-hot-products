@@ -18,6 +18,7 @@ namespace Web.Host
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddScoped(typeof(IFileReaderService<>), typeof(FileReaderService<>));
+            builder.Services.AddScoped<IProductService, ProductService>();
 
             var app = builder.Build();
 
