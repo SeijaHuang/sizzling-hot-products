@@ -1,7 +1,8 @@
 ﻿using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using Web.Host.Interfaces;
 using Web.Host.Models.Responses.Products;
-using Web.Host.Services.Interfaces;
 
 namespace Web.Host.Controllers
 {
@@ -21,14 +22,11 @@ namespace Web.Host.Controllers
         #endregion
 
         [HttpGet]
-        public async Task<ActionResult<GetTopProductsResponse>> GetTopProductsAsync([FromQuery] string startDate, [FromQuery] string endDate)
+        public async Task<ActionResult<GetTopProductsResponse>> GetTopProductsAsync([FromQuery, Required] DateTime startDate, [FromQuery] DateTime endDate)
         {
-            if (!DateOnly.TryParseExact(startDate, "dd/MM/yyyy", out DateOnly parsedStartDate) || !DateOnly.TryParseExact(endDate, "dd/MM/yyyy", out DateOnly parsedEndDtae))
-            {
-                return BadRequest();
-            }
+            if (endDate == default) endDate = new DateTime(2026, 4, 23);
 
-            var response = await _productService.GetTopProductsAsync(parsedStartDate, parsedEndDtae);
+            var response = await _productService.GetTopProductsAsync(startDate, endDate);
 
             return Ok(response);
         }

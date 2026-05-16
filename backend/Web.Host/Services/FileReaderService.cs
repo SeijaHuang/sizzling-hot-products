@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using Web.Host.Helpers;
-using Web.Host.Services.Interfaces;
+using Web.Host.Interfaces;
 
 namespace Web.Host.Services;
 
@@ -16,7 +16,7 @@ public class FileReaderService : IFileReaderService
         _defaultOptions = defaultOptions ?? new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
-            Converters = { new DateOnlyConverter() }
+            Converters = { new DateTimeConverter() }
         };
     }
     #endregion

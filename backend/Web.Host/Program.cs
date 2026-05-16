@@ -1,6 +1,6 @@
 
+using Web.Host.Interfaces;
 using Web.Host.Services;
-using Web.Host.Services.Interfaces;
 
 namespace Web.Host
 {
