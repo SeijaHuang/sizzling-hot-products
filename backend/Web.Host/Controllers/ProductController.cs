@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using Web.Host.Interfaces;
+using Web.Host.Models.Responses;
 using Web.Host.Models.Responses.Products;
 
 namespace Web.Host.Controllers;
@@ -10,7 +11,7 @@ namespace Web.Host.Controllers;
 [ApiController]
 public class ProductController : ControllerBase
 {
-    #region Pivate Fields
+    #region Private Fields
     private readonly IProductService _productService;
     #endregion
 
@@ -22,13 +23,24 @@ public class ProductController : ControllerBase
     #endregion
 
     [HttpGet]
-    public async Task<ActionResult<GetTopProductsResponse>> GetTopProductsAsync([FromQuery, Required] DateTime startDate, [FromQuery] DateTime endDate)
+    public async Task<ClientResponse<GetTopProductsResponse>> GetTopProductsAsync([FromQuery, Required] DateTime startDate, [FromQuery] DateTime endDate)
     {
+        // if endDate is not provided, we will use current date as default value
         if (endDate == default) endDate = new DateTime(2026, 4, 23);
+
+        // Validate that startDate is not later than endDate
+        if (startDate > endDate)
+        {
+            throw new InvalidOperationException("startDate cannot be later than endDate.");
+        }
 
         var response = await _productService.GetTopProductsAsync(startDate, endDate);
 
-        return Ok(response);
+        return new ClientResponse<GetTopProductsResponse>
+        {
+            Success = true,
+            Body = response
+        };
     }
 }
 

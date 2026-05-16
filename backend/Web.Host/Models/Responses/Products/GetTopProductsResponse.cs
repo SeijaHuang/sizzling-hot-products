@@ -4,19 +4,19 @@ namespace Web.Host.Models.Responses.Products;
 
 public class TopProductDaily
 {
-    public DateTime Date { set; get; }
-    public Product Product { set; get; } = new Product();
+    public DateTime Date { get; set; }
+    public Product Product { get; set; } = new Product();
 }
 
 public class TopProductPeriod
 {
-    public DateTime StartDate { set; get; }
-    public DateTime EndDate { set; get; }
-    public Product Product { set; get; } = new Product();
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public Product Product { get; set; } = new Product();
 }
 
 public class GetTopProductsResponse
 {
-    public List<TopProductDaily> Daily { set; get; } = new List<TopProductDaily>();
-    public TopProductPeriod? Period { set; get; }
+    public List<TopProductDaily> Daily { get; set; } = new List<TopProductDaily>();
+    public TopProductPeriod? Period { get; set; }
 }
