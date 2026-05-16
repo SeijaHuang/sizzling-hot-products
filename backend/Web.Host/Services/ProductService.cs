@@ -9,7 +9,7 @@ public class ProductService : IProductService
 {
     #region Private Fields
     private readonly IFileReaderService _fileReaderService;
-    private readonly string _ordersFilePath = "Data/orders.json";
+    private readonly string _ordersFilePath = "Data/order.json";
     private readonly string _productsFilePath = "Data/products.json";
     private readonly string _defaultProductName = "Unknown Product";
     private class SalesCountByProduct : Dictionary<string, int>; // key is productId, value is sales count
