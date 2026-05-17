@@ -76,6 +76,8 @@ Further architectural decisions would depend on scale and domain complexity.
 - [.NET 8 SDK](https://dotnet.microsoft.com/download)
 - [Node.js 18+](https://nodejs.org/)
 
+> All commands below assume you are in the **project root directory** unless otherwise noted.
+
 ### 1. Configure the Frontend Environment
 
 ```bash
@@ -139,7 +141,7 @@ The app will be available at `http://localhost:3000`.
 | `endDate`   | `DateTime  (yyyy-MM-dd)` | End of the date range; defaults to 2026-04-23 |
 
 - startDate must be earlier than or equal to endDate.
-- To query a single day, provide the same value for both startDate and endDat.
+- To query a single day, provide the same value for both startDate and endDate.
 
 **Response Shape**
 
