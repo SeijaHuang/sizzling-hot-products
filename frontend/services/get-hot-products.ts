@@ -9,10 +9,11 @@ const getHotProductsAsync = async ({
   startDate,
   endDate,
 }: GetTopProductsRequest): Promise<ClientResponse<GetTopProductsResponse>> => {
-  const response = await request.get<GetTopProductsResponse>("/products", {
-    startDate,
-    endDate,
-  });
+  const response: ClientResponse<GetTopProductsResponse> =
+    await request.get<GetTopProductsResponse>("/products", {
+      startDate,
+      endDate,
+    });
   return response;
 };
 
