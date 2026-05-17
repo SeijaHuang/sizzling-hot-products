@@ -6,10 +6,13 @@ A full-stack application that calculates the top-selling ("sizzling hot") produc
 
 ## 🛠️ Tech Stack
 
-| Layer    | Technology           | Reason                                                                                                                                                                                              |
-| -------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Backend  | .NET 8 Web API       | Matches the role's technical requirements; strong typing and LINQ make aggregation logic clean and testable                                                                                         |
-| Frontend | Next.js (TypeScript) | Aligns with the team's frontend stack. Given the scope of this challenge the app uses client-side rendering, but the architecture is ready to adopt SSR or SSG if data fetching requirements evolve |
+| Layer    | Technology                                | Reason                                                                                                                                                                                              |
+| -------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Backend  | .NET 8 Web API                            | Matches the role's technical requirements; strong typing and LINQ make aggregation logic clean and testable                                                                                         |
+| Frontend | Next.js 16 + React 19 (TypeScript)        | Aligns with the team's frontend stack. Given the scope of this challenge the app uses client-side rendering, but the architecture is ready to adopt SSR or SSG if data fetching requirements evolve |
+| Styling  | Tailwind CSS 4 + shadcn/ui + Radix UI     | Utility-first styling with accessible, headless primitives — fast to iterate, consistent design tokens                                                                                              |
+| API      | TanStack React Query 5 + Axios            | Declarative server-state management with built-in caching, loading, and error states                                                                                                                |
+| Testing  | Vitest + React Testing Library (Frontend) | Fast Vite-native test runner that aligns with the Next.js build toolchain                                                                                                                           |
 
 ---
 
@@ -32,6 +35,28 @@ A full-stack application that calculates the top-selling ("sizzling hot") produc
 │   │   ├── Services/                  # ProductService, FileReaderService
 │   │   └── Properties/                # Launch settings
 │   └── Web.Host.Test/                 # xUnit test project
+├── frontend/
+│   ├── app/                           # Next.js App Router
+│   │   ├── page.tsx                   # Home page
+│   │   ├── layout.tsx                 # Root layout with metadata & fonts
+│   │   └── globals.css                # Global styles & Tailwind imports
+│   ├── components/
+│   │   ├── TopProductsBoard/          # Main feature component
+│   │   │   ├── TopProductsBoard.tsx   # Board with date picker & results table
+│   │   │   └── components/
+│   │   │       ├── DatePicker.tsx     # Date range picker (react-day-picker)
+│   │   │       └── FlameIcon.tsx      # Flame badge icon
+│   │   └── ui/                        # shadcn/ui base components
+│   ├── lib/
+│   │   ├── providers.tsx              # React Query provider
+│   │   ├── request.ts                 # Axios instance with interceptors
+│   │   └── utils.ts                   # cn() className helper
+│   ├── services/
+│   │   └── get-hot-products.ts        # API fetch function
+│   ├── types/                         # TypeScript type definitions
+│   ├── utils/
+│   │   └── format-date.ts             # Date formatting helpers
+│   └── tests/
 └── README.md
 ```
 
@@ -51,7 +76,31 @@ Further architectural decisions would depend on scale and domain complexity.
 - [.NET 8 SDK](https://dotnet.microsoft.com/download)
 - [Node.js 18+](https://nodejs.org/)
 
-### Run the Backend
+### 1. Configure the Frontend Environment
+
+```bash
+cd frontend
+cp .env.example .env.development
+```
+
+`.env.development` contains one variable:
+
+| Variable                            | Default                     | Description                 |
+| ----------------------------------- | --------------------------- | --------------------------- |
+| `NEXT_PUBLIC_WEB_HOST_API_BASE_URL` | `http://localhost:8000/api` | Base URL of the backend API |
+
+Change the value if your backend runs on a different port or host.
+
+### 2. Backend User Secrets
+
+The backend requires the following user secret to configure CORS:
+
+```bash
+cd backend/Web.Host
+dotnet user-secrets set "CORSAllowedOrigins" "http://localhost:3000"
+```
+
+### 3. Run the Backend
 
 ```bash
 cd backend/Web.Host
@@ -62,7 +111,7 @@ dotnet run
 The API will be available at `http://localhost:8000`.
 Swagger UI is available at http://localhost:8000/swagger.
 
-### Run the Frontend
+### 4. Run the Frontend
 
 ```bash
 cd frontend
