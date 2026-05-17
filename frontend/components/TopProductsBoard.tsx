@@ -27,56 +27,55 @@ const TopProductsBoard = () => {
     <div className="w-full text-neutral-800 flex flex-col items-center gap-6">
       <div className="flex items-center gap-4">
         <Image height={40} width={40} src="/flame.png" alt={"Hot Product"} />
-        <h1 className="text-2xl font-bold text-center">
+        <h1 className="text-lg sm:text-2xl font-bold text-center">
           Top Sizzling Hot Products
         </h1>
         <Image height={40} width={40} src="/flame.png" alt={"Hot Product"} />
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="text-neutral-800">Date or Period</TableHead>
-            <TableHead className="text-neutral-800">
-              Top Sizzling Hot Product
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {isLoading || !data ? (
-            Array.from({ length: 3 }).map((_, i) => (
-              <TableRow key={i}>
-                <TableCell>
-                  <Skeleton className="h-4 w-28" />
-                </TableCell>
-                <TableCell>
-                  <Skeleton className="h-4 w-48" />
-                </TableCell>
+      {isLoading || !data ? (
+        <Skeleton className="w-full h-48" />
+      ) : (
+        <div className="w-full overflow-x-auto rounded-md border">
+          {" "}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-neutral-800 whitespace-nowrap w-36 sm:w-48">
+                  Date or Period
+                </TableHead>
+                <TableHead className="text-neutral-800">
+                  Top Sizzling Hot Product
+                </TableHead>
               </TableRow>
-            ))
-          ) : (
-            <>
+            </TableHeader>
+            <TableBody>
               {data?.daily.map((item: TopProductDaily) => (
                 <TableRow key={item.date}>
-                  <TableCell>{formatDate(item.date)}</TableCell>
-                  <TableCell>{item.product.name}</TableCell>
+                  <TableCell className="whitespace-nowrap text-sm sm:text-base">
+                    {formatDate(item.date)}
+                  </TableCell>
+                  <TableCell className="text-sm sm:text-base">
+                    {item.product.name}
+                  </TableCell>
                 </TableRow>
               ))}
               {data?.period && (
                 <TableRow>
-                  <TableCell>
+                  <TableCell className="text-sm sm:text-base">
                     {formatDate(data.period.startDate)} -{" "}
+                    <br className="sm:hidden" />
                     {formatDate(data.period.endDate)}
                   </TableCell>
-                  <TableCell className="flex items-center gap-2">
+                  <TableCell className="text-sm sm:text-base">
                     {data.period.product.name}
                   </TableCell>
                 </TableRow>
               )}
-            </>
-          )}
-        </TableBody>
-      </Table>
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </div>
   );
 };
