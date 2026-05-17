@@ -40,24 +40,35 @@ A full-stack application that calculates the top-selling ("sizzling hot") produc
 │   │   ├── page.tsx                   # Home page
 │   │   ├── layout.tsx                 # Root layout with metadata & fonts
 │   │   └── globals.css                # Global styles & Tailwind imports
-│   ├── components/
-│   │   ├── TopProductsBoard/          # Main feature component
-│   │   │   ├── TopProductsBoard.tsx   # Board with date picker & results table
-│   │   │   └── components/
-│   │   │       ├── DatePicker.tsx     # Date range picker (react-day-picker)
-│   │   │       └── FlameIcon.tsx      # Flame badge icon
-│   │   └── ui/                        # shadcn/ui base components
-│   ├── lib/
-│   │   ├── providers.tsx              # React Query provider
-│   │   ├── request.ts                 # Axios instance with interceptors
-│   │   └── utils.ts                   # cn() className helper
-│   ├── services/
-│   │   └── get-hot-products.ts        # API fetch function
-│   ├── types/                         # TypeScript type definitions
-│   ├── utils/
-│   │   └── format-date.ts             # Date formatting helpers
-│   └── tests/
-└── README.md
+|   ├── components/
+│   │   ├── Shared/
+│   │   ├── DatePicker.tsx          # Date range picker (react-day-picker)
+│   │   └── FlameIcon.tsx           # Flame badge icon
+│   ├── TopProductsBoard/           # Main feature component
+│   │   ├── TopProductsBoard.tsx    # Board with date picker & results table
+│   │   ├── index.ts
+│   │   ├── components/
+│   │   |   ├── TopProductsHeader.tsx
+│   │   │   └── TopProductsTable.tsx
+│   │   └── ui/                         # shadcn/ui base components
+|   ├── lib/
+|   │   ├── providers.tsx               # React Query provider
+|   │   ├── request.ts                  # Axios instance with interceptors
+|   │   └── utils.ts                    # cn() className helper
+|   ├── services/
+|   │   └── get-hot-products.ts         # API fetch function
+|   ├── types/
+|   │   ├── common/
+|   │   │   ├── client-response.ts
+|   │   │   └── service-keys.ts
+|   │   ├── services/
+|   │   │   └── get-top-products.ts
+|   │   ├── order.ts
+|   │   └── product.ts
+|   ├── utils/
+|   │   └── format-date.ts              # Date formatting helpers
+|   └── tests/
+|       └── top-products-board.test.tsx
 ```
 
 ---
