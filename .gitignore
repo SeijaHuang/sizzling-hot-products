@@ -23,3 +23,10 @@ Thumbs.db
 
 # Claude AI
 .claude/
+
+# Node.js
+node_modules
+
+.env
+.env.development
+.env.production

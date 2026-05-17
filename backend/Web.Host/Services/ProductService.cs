@@ -82,7 +82,7 @@ public class ProductService : IProductService
                     }
 
                     // If there is no product left for that date in dailyStats after decreasing, we can remove the date from dailyStats to save space
-                    if (dailyStats[cancelledOrder.Date].Count == 0)
+                    if (dailyStats.Count > 0 && dailyStats[cancelledOrder.Date].Count == 0)
                     {
                         dailyStats.Remove(cancelledOrder.Date);
                     }
