@@ -163,7 +163,25 @@ The app will be available at `http://localhost:3000`.
 
 ---
 
-## 💡 Solution Approach & Design Decisions
+## 🎨 Frontend Architecture Decisions
+
+### Component Structure: Container & Presentational Components
+
+TopProductsBoard acts as a Container Component, responsible for data fetching (useQuery), state management (date selection), and conditional rendering (loading / empty / data states). Child components TopProductsTable and TopProductsHeader are pure presentational components that only receive props.
+
+The date range selector (two DatePicker + separator) was intentionally kept inside TopProductsBoard rather than extracted into a sub-component, as start and end dates are tightly coupled through the disabled logic — extracting them would add prop-passing complexity with no real benefit.
+
+### Testing Strategy
+
+Rather than writing unit tests for every component, integration tests are written at the TopProductsBoard level, covering all three render states (loading, empty, data), period row presence, and date interaction. Pure UI components (DatePicker, FlameIcon, TopProductsHeader) are not tested in isolation as they contain no business logic. DatePicker behavior is already indirectly covered by the date selection tests in TopProductsBoard.
+
+### Styling & Theming: Semantic Color Tokens
+
+Semantic color tokens are defined in globals.css under @theme inline (e.g. --color-text-primary) rather than using Tailwind's atomic color utilities (e.g. text-neutral-800) directly in components. Semantic naming describes intent rather than specific color values, making theme changes a single-point update and keeping the door open for dark mode support.
+
+---
+
+## 💡 Solution Approach & Backend Design Decisions
 
 ### Core Algorithm
 

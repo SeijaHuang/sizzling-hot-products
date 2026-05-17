@@ -27,7 +27,7 @@ export function DatePicker({ id, value, onChange, disabled }: DatePickerProps) {
           data-testid={id}
           variant="outline"
           className={cn(
-            "w-34 sm:w-48 justify-start text-left font-normal bg-white text-neutral-800 hover:bg-neutral-50 hover:text-neutral-950",
+            "w-34 sm:w-48 justify-start text-left font-normal bg-white text-primary hover:bg-neutral-50 hover:text-primary",
             !value && "text-muted-foreground",
           )}
         >
@@ -35,7 +35,7 @@ export function DatePicker({ id, value, onChange, disabled }: DatePickerProps) {
           {value ? format(value, "dd/MM/yyyy") : "Pick a date"}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 bg-white text-neutral-800">
+      <PopoverContent className="w-auto p-0 bg-white text-primary">
         <Calendar
           mode="single"
           selected={value}
