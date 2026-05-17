@@ -35,7 +35,7 @@ public class FileReaderService : IFileReaderService
         }
         catch (FileNotFoundException ex)
         {
-            throw new FileNotFoundException($"The file '{path}' was not found.");
+            throw new FileNotFoundException($"The file '{path}' was not found.", ex);
         }
         catch (JsonException ex)
         {

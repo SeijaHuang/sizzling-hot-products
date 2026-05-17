@@ -20,3 +20,6 @@ project.nuget.cache
 # OS
 Thumbs.db
 .DS_Store
+
+# Claude AI
+.claude/
