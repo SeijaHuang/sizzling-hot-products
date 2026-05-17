@@ -73,11 +73,27 @@ public class ProductService : IProductService
                     if (dailyStats.ContainsKey(cancelledOrder.Date) && dailyStats[cancelledOrder.Date].ContainsKey(entry.Id))
                     {
                         dailyStats[cancelledOrder.Date][entry.Id] = Math.Max(0, dailyStats[cancelledOrder.Date][entry.Id] - 1);
+
+                        // If the count for the product in dailyStats is 0 after decreasing, we can remove the product from dailyStats for that date to save space
+                        if (dailyStats[cancelledOrder.Date][entry.Id] == 0)
+                        {
+                            dailyStats[cancelledOrder.Date].Remove(entry.Id);
+                        }
+                    }
+
+                    // If there is no product left for that date in dailyStats after decreasing, we can remove the date from dailyStats to save space
+                    if (dailyStats[cancelledOrder.Date].Count == 0)
+                    {
+                        dailyStats.Remove(cancelledOrder.Date);
                     }
 
                     if (totalStats.ContainsKey(entry.Id))
                     {
                         totalStats[entry.Id] = Math.Max(0, totalStats[entry.Id] - 1);
+                        if (totalStats[entry.Id] == 0)
+                        {
+                            totalStats.Remove(entry.Id);
+                        }
                     }
                 }
             }
@@ -131,15 +147,13 @@ public class ProductService : IProductService
 
         return result;
 
-
-
-
     }
 
     #region Private Methods
     private List<TopProductDaily> GetTopProductDailies(DailyProductSales dailyStats, Dictionary<string, string> productsDict)
     {
         var result = new List<TopProductDaily>();
+
         foreach (var dailyStat in dailyStats)
         {
             var date = dailyStat.Key;
@@ -160,6 +174,7 @@ public class ProductService : IProductService
 
     private TopProductPeriod GetTopProductPeriod(SalesCountByProduct totalStats, Dictionary<string, string> productsDict, DateTime startDate, DateTime endDate)
     {
+
         var topProduct = GetTopProduct(totalStats, productsDict);
 
         return new TopProductPeriod

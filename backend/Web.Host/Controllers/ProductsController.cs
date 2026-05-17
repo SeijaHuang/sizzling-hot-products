@@ -31,7 +31,7 @@ public class ProductsController : ControllerBase
         // Validate that startDate is not later than endDate
         if (startDate > endDate)
         {
-            throw new InvalidOperationException("startDate cannot be later than endDate.");
+            throw new BadHttpRequestException("startDate cannot be later than endDate.");
         }
 
         var response = await _productService.GetTopProductsAsync(startDate, endDate);
