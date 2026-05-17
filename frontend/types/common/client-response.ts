@@ -5,6 +5,6 @@ export type ClientError = {
 
 export type ClientResponse<T> = {
   success: boolean;
-  data: T;
+  body: T;
   error?: ClientError;
 };

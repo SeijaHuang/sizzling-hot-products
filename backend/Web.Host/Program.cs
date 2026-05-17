@@ -11,6 +11,8 @@ namespace Web.Host
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var config = builder.Configuration;
+
             // Add services to the container.
 
             builder.Services.AddControllers(options =>
@@ -51,7 +53,16 @@ namespace Web.Host
             builder.Services.AddScoped<IFileReaderService, FileReaderService>();
             builder.Services.AddScoped<IProductService, ProductService>();
 
-
+            var corsAllowedOrigins = config["CORSAllowedOrigins"]?.Split(",") ?? Array.Empty<string>();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                {
+                    builder.WithOrigins(corsAllowedOrigins)
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
 
             var app = builder.Build();
 
@@ -63,6 +74,7 @@ namespace Web.Host
             }
 
             app.UseAuthorization();
+            app.UseCors("CorsPolicy");
 
             app.MapControllers();
 
