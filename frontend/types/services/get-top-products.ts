@@ -13,7 +13,7 @@ export type TopProductPeriod = {
 
 export type GetTopProductsResponse = {
   daily: TopProductDaily[];
-  period: TopProductPeriod;
+  period?: TopProductPeriod;
 };
 
 export type GetTopProductsRequest = {

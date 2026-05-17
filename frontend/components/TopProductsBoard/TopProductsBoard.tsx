@@ -18,6 +18,8 @@ import { DatePicker } from "./components/DatePicker";
 import { useState } from "react";
 import { formatDateToString, formatStringToDate } from "@/utils/format-date";
 
+const id = "top-products-board";
+
 const TopProductsBoard = () => {
   const [startDate, setStartDate] = useState<Date | undefined>(
     new Date("2026-04-21"),
@@ -38,13 +40,32 @@ const TopProductsBoard = () => {
   });
 
   const renderContent = (): React.ReactNode => {
-    if (isLoading) return <Skeleton className="w-full h-48" />;
+    if (isLoading)
+      return (
+        <Skeleton
+          id={`${id}-skeleton`}
+          data-testid={`${id}-skeleton`}
+          className="w-full h-48"
+        />
+      );
 
     if (!data?.daily.length)
-      return <div className="text-center text-xl">No hot products found.</div>;
+      return (
+        <div
+          id={`${id}-no-results`}
+          data-testid={`${id}-no-results`}
+          className="text-center text-xl"
+        >
+          No hot products found.
+        </div>
+      );
 
     return (
-      <div className="w-full overflow-x-auto rounded-md border">
+      <div
+        id={`${id}-table`}
+        data-testid={`${id}-table`}
+        className="w-full overflow-x-auto rounded-md border"
+      >
         <Table>
           <TableHeader>
             <TableRow>
@@ -94,14 +115,16 @@ const TopProductsBoard = () => {
         </h1>
         <FlameIcon />
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-1 sm:gap-4 ">
         <DatePicker
+          id={`${id}-start-date`}
           value={startDate}
           onChange={setStartDate}
           disabled={(date) => (endDate ? date > endDate : false)}
         />
-        <span className="text-neutral-500">—</span>
+        <span className="text-neutral-500 ">—</span>
         <DatePicker
+          id={`${id}-end-date`}
           value={endDate}
           onChange={setEndDate}
           disabled={(date) => (startDate ? date < startDate : false)}
